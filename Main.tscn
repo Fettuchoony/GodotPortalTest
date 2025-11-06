@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://cxeiq5t6rlyl3"]
+
+[ext_resource type="Script" uid="uid://d05mqy5lg4rln" path="res://csg_cylinder_3d.gd" id="1_glv2v"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uu6xs"]
+albedo_color = Color(0, 0.33, 0.12649997, 1)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(77.15832, 0, 0, 0, 0.17893559, 0, 0, 0, 74.49392, 0, 0, 0)
+material = SubResource("StandardMaterial3D_uu6xs")
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+script = ExtResource("1_glv2v")
+
+[node name="Camera3D" type="Camera3D" parent="CSGCylinder3D"]
+transform = Transform3D(1, 0, 0, 0, 0.97566485, 0.21926728, 0, -0.21926728, 0.97566485, 0, 1.5667243, 4.0976114)
