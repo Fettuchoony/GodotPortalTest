@@ -8,7 +8,7 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	if Input.is_key_pressed(KEY_FORWARD):
+	if Input.is_key_pressed(KEY_FORWRD):
 		translate(Vector3.FORWARD)
 	if Input.is_key_pressed(KEY_LEFT):
 		translate(Vector3.LEFT)

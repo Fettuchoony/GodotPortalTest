@@ -1,19 +1,62 @@
-[gd_scene load_steps=3 format=3 uid="uid://cxeiq5t6rlyl3"]
+[gd_scene load_steps=10 format=3 uid="uid://cxeiq5t6rlyl3"]
 
-[ext_resource type="Script" uid="uid://d05mqy5lg4rln" path="res://csg_cylinder_3d.gd" id="1_glv2v"]
+[ext_resource type="Script" uid="uid://cq48dxeabn5gs" path="res://character_movement.gd" id="1_glv2v"]
+[ext_resource type="PackedScene" uid="uid://wmf2eu0uuhrg" path="res://addons/third-person-camera/third_person_camera/ThirdPersonCamera.tscn" id="2_uu6xs"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uu6xs"]
-albedo_color = Color(0, 0.33, 0.12649997, 1)
+[sub_resource type="Environment" id="Environment_uu6xs"]
+
+[sub_resource type="CameraAttributesPhysical" id="CameraAttributesPhysical_r0du0"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_uu6xs"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_uu6xs"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_uu6xs"]
+size = Vector3(17.19, 0.1, 10.315)
+
+[sub_resource type="BoxMesh" id="BoxMesh_uu6xs"]
+size = Vector3(17.19, 0.1, 10.315)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r0du0"]
+albedo_color = Color(1.8049032e-07, 0.30530643, 0.0972966, 1)
 
 [node name="Node3D" type="Node3D"]
 
-[node name="CSGBox3D" type="CSGBox3D" parent="."]
-transform = Transform3D(77.15832, 0, 0, 0, 0.17893559, 0, 0, 0, 74.49392, 0, 0, 0)
-material = SubResource("StandardMaterial3D_uu6xs")
-
-[node name="CSGCylinder3D" type="CSGCylinder3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+[node name="CharacterBody3D" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2649469, 0)
+disable_mode = 2
 script = ExtResource("1_glv2v")
 
-[node name="Camera3D" type="Camera3D" parent="CSGCylinder3D"]
-transform = Transform3D(1, 0, 0, 0, 0.97566485, 0.21926728, 0, -0.21926728, 0.97566485, 0, 1.5667243, 4.0976114)
+[node name="ThirdPersonCamera" parent="CharacterBody3D" instance=ExtResource("2_uu6xs")]
+pivot_offset = Vector2(0, 2.29)
+vertical_rotation_sensitiveness = null
+follow_target = 1
+environment = SubResource("Environment_uu6xs")
+attributes = SubResource("CameraAttributesPhysical_r0du0")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4871535, 0)
+shape = SubResource("CapsuleShape3D_uu6xs")
+debug_color = Color(3.706068e-06, 0.62085986, 0.5616422, 0.41960785)
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="CharacterBody3D/CollisionShape3D"]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+transform = Transform3D(1.005, 0, 0, 0, 1.005, 0, 0, 0, 1.005, 0, 0, 0)
+axis_lock_linear_x = true
+axis_lock_linear_y = true
+axis_lock_linear_z = true
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+physics_material_override = SubResource("PhysicsMaterial_uu6xs")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_uu6xs")
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="StaticBody3D"]
+mesh = SubResource("BoxMesh_uu6xs")
+material = SubResource("StandardMaterial3D_r0du0")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.9177185, 0.2922432, -0.2690474, -0.005625937, 0.6676767, 0.7444301, 0.3971914, 0.6846911, -0.61109525, 0, 6.8276563, 0)
