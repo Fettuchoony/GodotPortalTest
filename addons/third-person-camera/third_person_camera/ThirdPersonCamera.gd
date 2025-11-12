@@ -15,6 +15,7 @@ enum FOLLOW_TARGETS {
 @onready var _camera_spring_arm := $RotationPivot/OffsetPivot/CameraSpringArm
 @onready var _camera_marker := $RotationPivot/OffsetPivot/CameraSpringArm/CameraMarker
 @onready var _camera_shaker := $CameraShaker
+@onready var _player = get_node("/root/Node3D/MainPlayer")
 
 ##
 @export var distance_from_pivot := 10.0 :
@@ -137,18 +138,20 @@ func _physics_process(_delta):
 	if Engine.is_editor_hint() :
 		_camera_marker.global_position = Vector3(0., 0., 1.).rotated(Vector3(1., 0., 0.), deg_to_rad(initial_dive_angle_deg)).rotated(Vector3(0., 1., 0.), self.global_rotation.y) * _camera_spring_arm.spring_length + _camera_spring_arm.global_position
 		pass
-	#_camera.global_position = _camera_marker.global_position
+	# Disable below method to add camera drag
+	_camera.global_position = _camera_marker.global_position
 	tweenCameraToMarker()
 	_camera_offset_pivot.global_position = _camera_offset_pivot.get_parent().to_global(Vector3(pivot_offset.x, pivot_offset.y, 0.0))
-	_camera_rotation_pivot.global_rotation_degrees.x = initial_dive_angle_deg
 	_camera_rotation_pivot.global_position = global_position
-	#_process_tilt_input()
 	_process_horizontal_rotation_input()
 	_process_vertical_rotation_input()
-	#_update_camera_tilt()
 	_update_camera_horizontal_rotation()
 	_update_camera_vertical_rotation()
 	_process_parent_rotation_follow()
+	# Dont need with vertical camera movement
+	#_update_camera_tilt()
+	#_process_tilt_input()
+	#_camera_rotation_pivot.global_rotation_degrees.x = initial_dive_angle_deg
 
 
 func tweenCameraToMarker() :
@@ -177,6 +180,7 @@ func _process_parent_rotation_follow() :
 	if follow_target != FOLLOW_TARGETS.PARENT :
 		return
 	_camera_rotation_pivot.global_rotation.y = self.global_rotation.y
+	_camera_rotation_pivot.global_rotation.x = self.global_rotation.x
 	var vect_to_offset_pivot : Vector2 = (
 		Vector2(_camera_offset_pivot.global_position.x, _camera_offset_pivot.global_position.z)
 		-
@@ -184,25 +188,24 @@ func _process_parent_rotation_follow() :
 		).normalized()
 	_camera.global_rotation.y = -Vector2(0., -1.).angle_to(vect_to_offset_pivot.normalized())
 	vect_to_offset_pivot = (
-		Vector2(_camera_offset_pivot.global_position.x, _camera_offset_pivot.global_position.z)
+		Vector2(_camera_offset_pivot.global_position.y, _camera_offset_pivot.global_position.z)
 		-
 		Vector2(_camera.global_position.y, _camera.global_position.z)
 		).normalized()
-	_camera.global_rotation.x = -Vector2(-1., 0.).angle_to(vect_to_offset_pivot.normalized())
+	_camera.global_rotation.x = -Vector2(0., -1.).angle_to(vect_to_offset_pivot.normalized())
 
-func _process_tilt_input() :
-	if InputMap.has_action("tp_camera_up") and InputMap.has_action("tp_camera_down") :
-		var tilt_variation = Input.get_action_strength("tp_camera_up") -  Input.get_action_strength("tp_camera_down")
-		tilt_variation = tilt_variation * get_process_delta_time() * 5 * tilt_sensitiveness
-		camera_tilt_deg = clamp(camera_tilt_deg + tilt_variation, tilt_lower_limit_deg - initial_dive_angle_deg, tilt_upper_limit_deg - initial_dive_angle_deg)
+#func _process_tilt_input() :
+	#if InputMap.has_action("tp_camera_up") and InputMap.has_action("tp_camera_down") :
+		#var tilt_variation = Input.get_action_strength("tp_camera_up") -  Input.get_action_strength("tp_camera_down")
+		#tilt_variation = tilt_variation * get_process_delta_time() * 5 * tilt_sensitiveness
+		#camera_tilt_deg = clamp(camera_tilt_deg + tilt_variation, tilt_lower_limit_deg - initial_dive_angle_deg, tilt_upper_limit_deg - initial_dive_angle_deg)
 
 
 
-func _update_camera_tilt() :
-	var tilt_final_val = clampf(initial_dive_angle_deg + camera_tilt_deg, tilt_lower_limit_deg, tilt_upper_limit_deg)
-	var tween = create_tween()
-	tween.tween_property(_camera, "global_rotation_degrees:x", tilt_final_val, 0.1)
-
+#func _update_camera_tilt() :
+	#var tilt_final_val = clampf(initial_dive_angle_deg + camera_tilt_deg, tilt_lower_limit_deg, tilt_upper_limit_deg)
+	#var tween = create_tween()
+	#tween.tween_property(_camera, "global_rotation_degrees:x", tilt_final_val, 0.1)
 
 func _update_camera_horizontal_rotation() :
 	if follow_target == FOLLOW_TARGETS.PARENT :
@@ -229,7 +232,9 @@ func _update_camera_vertical_rotation() :
 		-
 		Vector2(_camera.global_position.y, _camera.global_position.z)
 		).normalized()	
-	_camera.global_rotation.x = -Vector2(-1., 0.).angle_to(vect_to_offset_pivot.normalized())
+	_camera.global_rotation.x = -Vector2(0., -1.).angle_to(vect_to_offset_pivot.normalized())
+	#if _player != null:
+		#_camera.look_at(Vector3.UP, _player.position, true)
 
 
 func apply_preset_shake(preset_number: int) :

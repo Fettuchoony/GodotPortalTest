@@ -7,6 +7,7 @@ func _enter_tree():
 	# Adding preview panel
 	preview_menu = preload("res://addons/third-person-camera/editor_panels/Preview.tscn").instantiate()
 	add_control_to_bottom_panel(preview_menu, "Third Person Camera")
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 func _exit_tree():
 	# Removing preview panel

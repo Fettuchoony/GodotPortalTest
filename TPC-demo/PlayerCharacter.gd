@@ -5,7 +5,7 @@ const SPEED = 5.0
 const JUMP_VELOCITY = 4.5
 
 func _ready() -> void:
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	Input.mouse_mode = Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 
 func _physics_process(delta: float) -> void:
