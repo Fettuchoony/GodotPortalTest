@@ -1,7 +1,9 @@
-[gd_scene load_steps=14 format=3 uid="uid://cxeiq5t6rlyl3"]
+[gd_scene load_steps=18 format=3 uid="uid://cxeiq5t6rlyl3"]
 
 [ext_resource type="Script" uid="uid://cq48dxeabn5gs" path="res://character_movement.gd" id="1_glv2v"]
 [ext_resource type="Script" uid="uid://vc8es41cbs7u" path="res://camera_3d.gd" id="2_uu6xs"]
+[ext_resource type="Shader" uid="uid://bksabxfmxhvqt" path="res://PortalShader.gdshader" id="3_cm0pq"]
+[ext_resource type="Script" uid="uid://sx0wjbc74v3e" path="res://portal_quad.gd" id="3_r0du0"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_uu6xs"]
 
@@ -34,13 +36,18 @@ size = Vector2(15, 15)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fos0i"]
 albedo_color = Color(1, 0, 0, 1)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fos0i"]
+render_priority = 0
+shader = ExtResource("3_cm0pq")
+
+[sub_resource type="QuadMesh" id="QuadMesh_cm0pq"]
+
 [node name="Node3D" type="Node3D"]
 
 [node name="MainPlayer" type="CharacterBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2649469, 0)
 disable_mode = 2
 script = ExtResource("1_glv2v")
-debug = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="MainPlayer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4871535, 0)
@@ -51,10 +58,10 @@ debug_color = Color(3.706068e-06, 0.62085986, 0.5616422, 0.41960785)
 mesh = SubResource("CapsuleMesh_uu6xs")
 
 [node name="CameraPivot" type="Node3D" parent="MainPlayer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 2.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
 
 [node name="SpringArm3D" type="SpringArm3D" parent="MainPlayer/CameraPivot"]
-spring_length = 7.0
+spring_length = 5.0
 
 [node name="Camera3D" type="Camera3D" parent="MainPlayer/CameraPivot/SpringArm3D"]
 script = ExtResource("2_uu6xs")
@@ -171,3 +178,9 @@ offset_right = 2.5
 offset_bottom = 12.500006
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="Portal" type="MeshInstance3D" parent="."]
+transform = Transform3D(-8.742278e-08, 0, -2, 0, 2, 0, 2, 0, -8.742278e-08, 7.51, 1.1, 0)
+material_override = SubResource("ShaderMaterial_fos0i")
+mesh = SubResource("QuadMesh_cm0pq")
+script = ExtResource("3_r0du0")

@@ -5,6 +5,8 @@ const MAX_SPEED = 3.5
 const JUMP_SPEED = 6.5
 const ACCELERATION = 4
 const DECELERATION = 4
+const SPEED = 5.0
+const JUMP_VELOCITY = 4.5
 
 @onready var _camera = $CameraPivot/SpringArm3D/Camera3D
 @onready var _target = $CameraPivot/SpringArm3D/Camera3D/PlayerRay
@@ -12,8 +14,6 @@ const DECELERATION = 4
 
 @export var debug:bool = false
 
-const SPEED = 5.0
-const JUMP_VELOCITY = 4.5
 
 
 func _physics_process(delta: float) -> void:
@@ -60,6 +60,7 @@ func movement_processing(delta: float) -> void:
 	velocity.x = hvel.x
 	velocity.z = hvel.z
 
+	# Non-acceleration based controls:
 	#if direction:
 		#
 		#velocity.x = direction.x * SPEED
